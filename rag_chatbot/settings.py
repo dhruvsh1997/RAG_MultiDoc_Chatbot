@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -136,7 +138,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # GROQ API Key (you would typically load this from .env)
-GROQ_API_KEY = "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"
+GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 
 # Directories for documents and vector stores
 DOCUMENTS_DIR = os.path.join(MEDIA_ROOT, 'documents')
