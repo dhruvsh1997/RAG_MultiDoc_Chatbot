@@ -1,0 +1,151 @@
+{% extends 'chatbot/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .chat-container {
+        height: 70vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+    }
+    
+    .message {
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        border-radius: 5px;
+        max-width: 80%;
+    }
+    
+    .user-message {
+        background-color: #007bff;
+        color: white;
+        align-self: flex-end;
+        margin-left: auto;
+    }
+    
+    .assistant-message {
+        background-color: #e9ecef;
+        color: #212529;
+    }
+    
+    .chat-input {
+        margin-top: 15px;
+    }
+    
+    .source-document {
+        font-size: 0.85rem;
+        margin-top: 5px;
+        padding: 8px;
+        background-color: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    #document-upload-area {
+        margin-bottom: 15px;
+        padding: 15px;
+        border: 1px dashed #ccc;
+        border-radius: 5px;
+        text-align: center;
+    }
+    
+    .loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+    
+    .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div id="document-upload-area">
+            <h4>Upload a PDF Document</h4>
+            <form id="document-upload-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                    <input type="file" class="form-control" id="document-input" name="document" accept=".pdf">
+                    <button class="btn btn-primary" type="submit" id="upload-button">Upload</button>
+                </div>
+                <small class="form-text text-muted">Upload a PDF document to enable the chatbot to answer questions based on its content.</small>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Chat with RAG Bot</h4>
+            </div>
+            <div class="card-body chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    {% for message in messages %}
+                        <div class="message {% if message.role == 'user' %}user-message{% else %}assistant-message{% endif %}">
+                            {{ message.content }}
+                        </div>
+                    {% empty %}
+                        <div class="text-center text-muted">
+                            {% if has_vectorstore %}
+                                <p>Start a conversation with the chatbot.</p>
+                            {% else %}
+                                <p>Please upload a document to start chatting.</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="chat-input">
+                    <form id="chat-form">
+                        <div class="input-group">
+                            <input type="text" id="message-input" class="form-control" placeholder="Type your message..." {% if not has_vectorstore %}disabled{% endif %}>
+                            <button class="btn btn-primary" type="submit" id="send-button" {% if not has_vectorstore %}disabled{% endif %}>
+                                <i class="fas fa-paper-plane"></i> Send
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loader-overlay" id="loader-overlay" style="display: none;">
+    <div class="loader"></div>
+    <div class="text-white mt-3">Processing document...</div>
+</div>
+
+<!-- Hidden input to store session ID -->
+<input type="hidden" id="session-id" value="{{ session_id }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/chat.js' %}"></script>
+{% endblock %}

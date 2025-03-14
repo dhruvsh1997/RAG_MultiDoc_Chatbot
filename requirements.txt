@@ -1,0 +1,11 @@
+Django==4.2.8
+langchain
+langchain-community
+langchain-core
+langchain-groq
+python-dotenv==1.0.0
+faiss-cpu==1.7.4
+sentence-transformers
+pypdf==3.17.0
+django-crispy-forms==2.0
+crispy-bootstrap4==2022.1
