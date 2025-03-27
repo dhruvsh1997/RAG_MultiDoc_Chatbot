@@ -1,0 +1,41 @@
+First, let's set the merge strategy for pulls. We'll use the merge strategy, which is typically the safest option:
+Copygit config pull.rebase false
+
+Now, let's try the pull command again:
+Copygit pull origin main --allow-unrelated-histories
+
+This will likely open a text editor asking you to enter a commit message for the merge. If it does, you can keep the default message or add your own. Save and close the editor (in vim, you would type :wq and press Enter).
+If there are any merge conflicts, Git will tell you. You'll need to resolve these conflicts manually. Open the conflicting files, look for the conflict markers (<<<<<<, =======, >>>>>>), and edit the files to resolve the conflicts.
+After resolving any conflicts (if there were any), stage the changes:
+Copygit add .
+
+Commit the merge:
+Copygit commit -m "Merge remote changes"
+
+Now try pushing again:
+Copygit push -u origin main
+
+
+If you encounter any issues during this process, particularly if there are merge conflicts, here's an alternative approach that might be simpler:
+
+Backup your current work:
+Copygit branch backup-main
+
+Reset your local main branch to match the remote:
+Copygit fetch origin
+git reset --hard origin/main
+
+Now, copy your project files into this reset branch, but don't stage them yet:
+Copygit checkout backup-main -- .
+
+Review the changes:
+Copygit status
+
+Stage and commit the changes:
+Copygit add .
+git commit -m "Add project files"
+
+Push to GitHub:
+Copygit push origin main
+
+This second approach essentially resets your local main branch to match the remote, then adds your project files on top of that.
