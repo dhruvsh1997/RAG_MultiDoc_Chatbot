@@ -12,6 +12,7 @@ from django.conf import settings
 from .models import Document, ChatSession, Message, VectorStore
 from .rag_utils import process_uploaded_document, get_answer
 
+#All Views
 def login_view(request):
     """Handle user login"""
     if request.method == 'POST':
