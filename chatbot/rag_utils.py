@@ -13,7 +13,7 @@ from langchain.chains import RetrievalQA
 from django.db import transaction
 
 from .models import Document, VectorStore, DocumentVectorMapping
-
+#load PDF
 def load_pdf(file_path):
     """Load a PDF file"""
     loader = PyPDFLoader(file_path)
