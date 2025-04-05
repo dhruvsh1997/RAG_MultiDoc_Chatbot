@@ -9,3 +9,4 @@ sentence-transformers
 pypdf==3.17.0
 django-crispy-forms==2.0
 crispy-bootstrap4==2022.1
+numpy
