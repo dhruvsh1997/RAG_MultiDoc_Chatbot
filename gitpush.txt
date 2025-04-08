@@ -1,7 +1,7 @@
 First, let's set the merge strategy for pulls. We'll use the merge strategy, which is typically the safest option:
 Copygit config pull.rebase false
 
-Now, let's try the pull command again:
+Now, let's try the pull command again :
 Copygit pull origin main --allow-unrelated-histories
 
 This will likely open a text editor asking you to enter a commit message for the merge. If it does, you can keep the default message or add your own. Save and close the editor (in vim, you would type :wq and press Enter).
